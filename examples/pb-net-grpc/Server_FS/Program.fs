@@ -28,7 +28,6 @@ let configureEndpoints (endpoints:Routing.IEndpointRouteBuilder) =
 let routes = router { get "/" (Giraffe.ResponseWriters.text "Hello") }
 
 let app = application {
-    url "http://localhost"
     use_router routes
     host_config configureHost
     service_config configureServices
