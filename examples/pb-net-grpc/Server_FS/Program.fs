@@ -33,7 +33,6 @@ let configureApp (app:IApplicationBuilder) =
 let routes = router { get "/" (Giraffe.ResponseWriters.text "Hello") }
 
 let app = application {
-    url "http://localhost"
     use_router routes
     app_config configureApp
     host_config configureHost
