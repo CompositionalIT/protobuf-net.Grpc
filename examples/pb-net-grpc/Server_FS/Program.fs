@@ -1,11 +1,10 @@
-open Microsoft.AspNetCore
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Server.Kestrel.Core
 open ProtoBuf.Grpc.Server
 open Saturn
-open SaturnExtensions
 open Server_FS
 
 /// Add Code First GRPC
@@ -20,9 +19,15 @@ let configureHost (webHostBuilder:IWebHostBuilder) =
             options.ListenLocalhost(10042, fun listenOptions ->
             listenOptions.Protocols <- HttpProtocols.Http2))
 
-/// Configures the GRPC endpoints
-let configureEndpoints (endpoints:Routing.IEndpointRouteBuilder) =
-    endpoints.MapGrpcService<MyCalculator>() |> ignore
+let configureApp (app:IApplicationBuilder) =
+     let env = app.ApplicationServices.GetService<IWebHostEnvironment>()
+     if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
+     
+     app.UseRouting()
+        .UseEndpoints(fun endpoints -> endpoints.MapGrpcService<MyCalculator>() |> ignore)
+        |> ignore
+
+     app
 
 /// This is a hack and shouldn't be required.
 let routes = router { get "/" (Giraffe.ResponseWriters.text "Hello") }
@@ -30,11 +35,9 @@ let routes = router { get "/" (Giraffe.ResponseWriters.text "Hello") }
 let app = application {
     url "http://localhost"
     use_router routes
+    app_config configureApp
     host_config configureHost
     service_config configureServices
-    use_developer_exceptions
-    use_routing
-    endpoint_config configureEndpoints
 }
 
 run app
