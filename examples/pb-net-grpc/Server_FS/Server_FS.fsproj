@@ -7,13 +7,16 @@
 
   <ItemGroup>
     <Compile Include="MyCalculator.fs" />
-    <Compile Include="Startup.fs" />
+    <Compile Include="SaturnHelpers.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shared_FS\Shared_FS.fsproj" />
     <PackageReference Include="TaskBuilder.fs" Version="2.1.0" />
+    <PackageReference Include="Saturn" Version="0.8.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.1.2"/>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.1"/>
 
     <ProjectReference Condition="'$(ExampleRefs)'=='local'" Include="..\..\..\src\protobuf-net.Grpc.AspNetCore\protobuf-net.Grpc.AspNetCore.csproj" />
     <PackageReference Condition="'$(ExampleRefs)'=='nuget'" Include="protobuf-net.Grpc.AspNetCore" Version="$(PBGRPCLibVersion)" />
